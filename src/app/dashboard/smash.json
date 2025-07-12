@@ -1,11 +1,20 @@
 {
   "social_history": {
     "food": "Mostly pescatarian; tracks macros with an app",
-    "exercise": "Runs 3–4 mi, 5×/week",
+    "exercise": {
+      "description": "Runs 3–4 mi, 5×/week",
+      "rating": 8
+    },
     "drugs": "No recreational use",
     "tobacco": "Never",
-    "alcohol": "Craft beer on Saturdays (2 pints)",
-    "caffeine": "One 12-oz cold brew daily",
+    "alcohol": {
+      "description": "Craft beer on Saturdays (2 pints)",
+      "rating": 6
+    },
+    "caffeine": {
+      "description": "One 12-oz cold brew daily",
+      "rating": 9
+    },
     "occupation": "Mechanical engineer, hybrid office/field",
     "sexual_history": "Married, monogamous; last STI screen 2023-11"
   },
@@ -50,5 +59,15 @@
     "metabolic_disease_risk": "Low",
     "dementia_risk": "Moderate",
     "last_updated": "2025-07-12"
+  },
+  "measurements": {
+    "weight": 180,
+    "height": 72,
+    "blood_pressure": 120,
+    "blood_sugar": 100,
+    "cholesterol": 200,
+    "hdl": 60,
+    "ldl": 100,
+    "triglycerides": 150
   }
 }

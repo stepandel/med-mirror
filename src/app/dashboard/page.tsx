@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,14 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import smashData from "./smash.json";
 
 export default function Dashboard() {
-  const [bmi, setBmi] = useState([22]);
-  const [physicalActivity, setPhysicalActivity] = useState([5]);
-  const [sleepHours, setSleepHours] = useState([7]);
+  // Calculate health metrics from smash.json data
+  const exerciseHours = smashData.social_history.exercise.rating; // Estimated hours per week
+  const caffeineIntake = smashData.social_history.caffeine.rating; // Servings per day
+  const alcoholIntake = smashData.social_history.alcohol.rating; // Drinks per week
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -24,71 +24,83 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold mb-8">Health Dashboard</h1>
 
         <div className="grid grid-cols-3 gap-8">
-          {/* Left Column - Sliders */}
+          {/* Left Column - Health Metrics Bars */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Health Metrics</CardTitle>
                 <CardDescription>
-                  Adjust your current health parameters
+                  Current health parameters from your profile
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* BMI Slider */}
+                {/* Exercise Level */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    BMI (Healthy Weight): {bmi[0]}
-                  </label>
-                  <Slider
-                    value={bmi}
-                    onValueChange={setBmi}
-                    min={15}
-                    max={40}
-                    step={0.1}
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium">
+                      Exercise Level
+                    </label>
+                    <span className="text-sm text-muted-foreground">
+                      {exerciseHours} hours/week
+                    </span>
+                  </div>
+                  <Progress
+                    value={(exerciseHours / 20) * 100}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                    <span>15</span>
-                    <span>40</span>
+                    <span>0 hrs</span>
+                    <span>20 hrs</span>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {smashData.social_history.exercise.description}
+                  </p>
                 </div>
 
-                {/* Physical Activity Slider */}
+                {/* Caffeine Intake */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Physical Activity (hours/week): {physicalActivity[0]}
-                  </label>
-                  <Slider
-                    value={physicalActivity}
-                    onValueChange={setPhysicalActivity}
-                    min={0}
-                    max={20}
-                    step={1}
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium">
+                      Caffeine Intake
+                    </label>
+                    <span className="text-sm text-muted-foreground">
+                      {caffeineIntake} serving/day
+                    </span>
+                  </div>
+                  <Progress
+                    value={(caffeineIntake / 5) * 100}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0</span>
-                    <span>20</span>
+                    <span>5+ servings</span>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {smashData.social_history.caffeine.description}
+                  </p>
                 </div>
 
-                {/* Sleep Hours Slider */}
+                {/* Alcohol Consumption */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Hours of Sleep: {sleepHours[0]}
-                  </label>
-                  <Slider
-                    value={sleepHours}
-                    onValueChange={setSleepHours}
-                    min={3}
-                    max={12}
-                    step={0.5}
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium">
+                      Alcohol Consumption
+                    </label>
+                    <span className="text-sm text-muted-foreground">
+                      {alcoholIntake} drinks/week
+                    </span>
+                  </div>
+                  <Progress
+                    value={(alcoholIntake / 14) * 100}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                    <span>3</span>
-                    <span>12</span>
+                    <span>0</span>
+                    <span>14+ drinks</span>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {smashData.social_history.alcohol.description}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -133,12 +145,12 @@ export default function Dashboard() {
                       Math.round(
                         smashData.forecast
                           .cardiovascular_event_10yr_probability * 100
-                      ) < 10
+                      ) < 5
                         ? "text-green-600"
                         : Math.round(
                             smashData.forecast
                               .cardiovascular_event_10yr_probability * 100
-                          ) <= 20
+                          ) <= 10
                         ? "text-yellow-600"
                         : "text-red-600"
                     }`}
