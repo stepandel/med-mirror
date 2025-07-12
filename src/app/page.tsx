@@ -1,99 +1,120 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Check, Loader2 } from "lucide-react"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Check, Loader2 } from "lucide-react";
 
 const steps = [
-  'Pull your medical records',
-  'Load your health data',
-  'Analyze the health data',
-  'Generate SMASH model',
-  'Build med mirror',
-  'Identify primary physician'
-]
+  "Pull your medical records",
+  "Load your health data",
+  "Analyze the health data",
+  "Generate SMASH FM model",
+  "Build med mirror",
+  "Identify primary physician",
+];
 
 function BuildProcess({ onComplete }: { onComplete: () => void }) {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [completedSteps, setCompletedSteps] = useState<number[]>([])
-  const [isComplete, setIsComplete] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     if (currentStep < steps.length) {
+      setCompletedSteps((prev) => [...prev, currentStep]);
       const timer = setTimeout(() => {
-        setCompletedSteps(prev => [...prev, currentStep])
         if (currentStep === steps.length - 1) {
-          setIsComplete(true)
-          onComplete()
+          setIsComplete(true);
+          onComplete();
         } else {
-          setCurrentStep(prev => prev + 1)
+          setCurrentStep((prev) => prev + 1);
         }
-      }, 2000)
+      }, 2000);
 
-      return () => clearTimeout(timer)
+      return () => clearTimeout(timer);
     }
-  }, [currentStep, onComplete])
+  }, [currentStep, onComplete]);
 
   const getStepStatus = (index: number) => {
-    if (completedSteps.includes(index)) return 'completed'
-    if (index === currentStep) return 'current'
-    return 'pending'
-  }
+    if (completedSteps.includes(index)) return "completed";
+    if (index === currentStep) return "current";
+    return "pending";
+  };
 
-  const progressValue = (completedSteps.length / steps.length) * 100
+  const progressValue = (completedSteps.length / steps.length) * 100;
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold mb-4">Building Your Med Mirror</h2>
-        <p className="text-lg text-muted-foreground">Please wait while we process your health data...</p>
+        <p className="text-lg text-muted-foreground">
+          Please wait while we process your health data...
+        </p>
       </div>
 
       <Card>
         <CardContent className="p-8">
           <div className="space-y-6">
             {steps.map((step, index) => {
-              const status = getStepStatus(index)
-              
+              const status = getStepStatus(index);
+
               return (
                 <div key={index} className="flex items-center space-x-4">
                   <div className="flex-shrink-0">
-                    {status === 'completed' ? (
+                    {status === "completed" ? (
                       <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                         <Check className="w-5 h-5 text-white" />
                       </div>
-                    ) : status === 'current' ? (
+                    ) : status === "current" ? (
                       <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                         <Loader2 className="w-4 h-4 text-primary-foreground animate-spin" />
                       </div>
                     ) : (
                       <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                        <span className="text-muted-foreground text-sm font-medium">{index + 1}</span>
+                        <span className="text-muted-foreground text-sm font-medium">
+                          {index + 1}
+                        </span>
                       </div>
                     )}
                   </div>
 
                   <div className="flex-1">
-                    <p className={`text-lg font-medium ${
-                      status === 'completed' ? 'text-green-700' :
-                      status === 'current' ? 'text-primary' :
-                      'text-muted-foreground'
-                    }`}>
+                    <p
+                      className={`text-lg font-medium ${
+                        status === "completed"
+                          ? "text-green-700"
+                          : status === "current"
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      }`}
+                    >
                       {step}
                     </p>
-                    {status === 'current' && (
-                      <Badge variant="secondary" className="mt-1">Processing...</Badge>
+                    {status === "current" && (
+                      <Badge variant="secondary" className="mt-1">
+                        Processing...
+                      </Badge>
                     )}
-                    {status === 'completed' && (
-                      <Badge variant="default" className="mt-1 bg-green-100 text-green-800 hover:bg-green-100">Complete</Badge>
+                    {status === "completed" && (
+                      <Badge
+                        variant="default"
+                        className="mt-1 bg-green-100 text-green-800 hover:bg-green-100"
+                      >
+                        Complete
+                      </Badge>
                     )}
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
 
@@ -112,11 +133,12 @@ function BuildProcess({ onComplete }: { onComplete: () => void }) {
                     🎉 Your Med Mirror is Ready!
                   </CardTitle>
                   <CardDescription className="text-green-700">
-                    We've successfully analyzed your health data and built your personalized medical mirror.
+                    We've successfully analyzed your health data and built your
+                    personalized medical mirror.
                   </CardDescription>
                 </CardHeader>
               </Card>
-              
+
               <Link href="/dashboard">
                 <Button size="lg" className="bg-green-600 hover:bg-green-700">
                   Check out your med mirror
@@ -127,27 +149,27 @@ function BuildProcess({ onComplete }: { onComplete: () => void }) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 export default function Home() {
-  const [showBuildProcess, setShowBuildProcess] = useState(false)
-  const [buildComplete, setBuildComplete] = useState(false)
+  const [showBuildProcess, setShowBuildProcess] = useState(false);
+  const [buildComplete, setBuildComplete] = useState(false);
 
   const handleStartBuild = () => {
-    setShowBuildProcess(true)
-  }
+    setShowBuildProcess(true);
+  };
 
   const handleBuildComplete = () => {
-    setBuildComplete(true)
-  }
+    setBuildComplete(true);
+  };
 
   if (showBuildProcess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted py-12 px-4">
         <BuildProcess onComplete={handleBuildComplete} />
       </div>
-    )
+    );
   }
 
   return (
@@ -155,9 +177,10 @@ export default function Home() {
       <div className="text-center">
         <h1 className="text-6xl font-bold mb-8">Med Mirror</h1>
         <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Visualize your health journey with personalized insights and predictions
+          Visualize your health journey with personalized insights and
+          predictions
         </p>
-        <Button 
+        <Button
           onClick={handleStartBuild}
           size="lg"
           className="text-xl py-6 px-8"
