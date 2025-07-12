@@ -14,8 +14,8 @@ import smashData from "./smash.json";
 
 export default function Dashboard() {
   // Calculate health metrics from smash.json data
-  const exerciseHours = smashData.social_history.exercise.rating; // Estimated hours per week
-  const caffeineIntake = smashData.social_history.caffeine.rating; // Servings per day
+  const exerciseRating = smashData.social_history.exercise.rating; // Estimated hours per week
+  const sleepRating = smashData.social_history.sleep.rating; // Servings per day
   const alcoholIntake = smashData.social_history.alcohol.rating; // Drinks per week
 
   return (
@@ -40,14 +40,8 @@ export default function Dashboard() {
                     <label className="block text-sm font-medium">
                       Exercise Level
                     </label>
-                    <span className="text-sm text-muted-foreground">
-                      {exerciseHours} hours/week
-                    </span>
                   </div>
-                  <Progress
-                    value={(exerciseHours / 20) * 100}
-                    className="w-full"
-                  />
+                  <Progress value={exerciseRating * 10} className="w-full" />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0 hrs</span>
                     <span>20 hrs</span>
@@ -61,22 +55,16 @@ export default function Dashboard() {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-sm font-medium">
-                      Caffeine Intake
+                      Sleep Hours
                     </label>
-                    <span className="text-sm text-muted-foreground">
-                      {caffeineIntake} serving/day
-                    </span>
                   </div>
-                  <Progress
-                    value={(caffeineIntake / 5) * 100}
-                    className="w-full"
-                  />
+                  <Progress value={sleepRating * 10} className="w-full" />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                    <span>0</span>
-                    <span>5+ servings</span>
+                    <span>0 hrs</span>
+                    <span>8+ hrs</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {smashData.social_history.caffeine.description}
+                    {smashData.social_history.sleep.description}
                   </p>
                 </div>
 
@@ -86,14 +74,8 @@ export default function Dashboard() {
                     <label className="block text-sm font-medium">
                       Alcohol Consumption
                     </label>
-                    <span className="text-sm text-muted-foreground">
-                      {alcoholIntake} drinks/week
-                    </span>
                   </div>
-                  <Progress
-                    value={(alcoholIntake / 14) * 100}
-                    className="w-full"
-                  />
+                  <Progress value={alcoholIntake * 10} className="w-full" />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0</span>
                     <span>14+ drinks</span>
