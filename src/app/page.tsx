@@ -1,103 +1,165 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect } from 'react'
+import Link from "next/link";
+
+const steps = [
+  'Pull your medical records',
+  'Load your health data',
+  'Analyze the health data',
+  'Generate SMASH model',
+  'Build med mirror',
+  'Identify primary physician'
+]
+
+function BuildProcess({ onComplete }: { onComplete: () => void }) {
+  const [currentStep, setCurrentStep] = useState(0)
+  const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const [isComplete, setIsComplete] = useState(false)
+
+  useEffect(() => {
+    if (currentStep < steps.length) {
+      const timer = setTimeout(() => {
+        setCompletedSteps(prev => [...prev, currentStep])
+        if (currentStep === steps.length - 1) {
+          setIsComplete(true)
+          onComplete()
+        } else {
+          setCurrentStep(prev => prev + 1)
+        }
+      }, 2000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [currentStep, onComplete])
+
+  const getStepStatus = (index: number) => {
+    if (completedSteps.includes(index)) return 'completed'
+    if (index === currentStep) return 'current'
+    return 'pending'
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">Building Your Med Mirror</h2>
+        <p className="text-lg text-gray-600">Please wait while we process your health data...</p>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="space-y-6">
+          {steps.map((step, index) => {
+            const status = getStepStatus(index)
+            
+            return (
+              <div key={index} className="flex items-center space-x-4">
+                <div className="flex-shrink-0">
+                  {status === 'completed' ? (
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  ) : status === 'current' ? (
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span className="text-gray-500 text-sm font-medium">{index + 1}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <p className={`text-lg font-medium ${
+                    status === 'completed' ? 'text-green-700' :
+                    status === 'current' ? 'text-blue-700' :
+                    'text-gray-500'
+                  }`}>
+                    {step}
+                  </p>
+                  {status === 'current' && (
+                    <p className="text-sm text-gray-500 mt-1">Processing...</p>
+                  )}
+                  {status === 'completed' && (
+                    <p className="text-sm text-green-600 mt-1">Complete</p>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="mt-8">
+          <div className="bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+              style={{ width: `${(completedSteps.length / steps.length) * 100}%` }}
+            ></div>
+          </div>
+          <p className="text-sm text-gray-600 mt-2 text-center">
+            {completedSteps.length} of {steps.length} steps completed
+          </p>
+        </div>
+
+        {isComplete && (
+          <div className="mt-8 text-center">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold text-green-800 mb-2">
+                🎉 Your Med Mirror is Ready!
+              </h3>
+              <p className="text-green-700">
+                We've successfully analyzed your health data and built your personalized medical mirror.
+              </p>
+            </div>
+            
+            <Link href="/dashboard">
+              <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition duration-200 shadow-lg hover:shadow-xl">
+                Check out your med mirror
+              </button>
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [showBuildProcess, setShowBuildProcess] = useState(false)
+  const [buildComplete, setBuildComplete] = useState(false)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const handleStartBuild = () => {
+    setShowBuildProcess(true)
+  }
+
+  const handleBuildComplete = () => {
+    setBuildComplete(true)
+  }
+
+  if (showBuildProcess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+        <BuildProcess onComplete={handleBuildComplete} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold text-gray-900 mb-8">Med Mirror</h1>
+        <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+          Visualize your health journey with personalized insights and predictions
+        </p>
+        <button 
+          onClick={handleStartBuild}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg text-xl transition duration-200 shadow-lg hover:shadow-xl"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Build your med mirror
+        </button>
+      </div>
     </div>
   );
 }
