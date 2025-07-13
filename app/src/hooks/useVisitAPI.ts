@@ -123,7 +123,7 @@ export const useVisitAPI = (): UseVisitAPIReturn => {
       setError(null);
 
       const response = await fetch(
-        "https://lima.llama-bull.ts.net/visit-crew",
+        "https://mirror-med-api.fly.dev/visit-crew",
         {
           method: "POST",
           headers: {
