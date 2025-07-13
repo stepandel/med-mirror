@@ -30,9 +30,7 @@ export default function Dashboard() {
   const handleVisitDoctor = async () => {
     try {
       await scheduleVisit(smashData);
-      alert(
-        "Visit scheduled successfully! Your improvement plan is now showing."
-      );
+      alert("Visit doctor successfully! Your improvement plan is now showing.");
     } catch (error) {
       console.error("Error calling visit API:", error);
       alert("Failed to schedule visit. Please try again.");
@@ -269,7 +267,7 @@ export default function Dashboard() {
               onClick={handleVisitDoctor}
               disabled={isVisitLoading}
             >
-              {isVisitLoading ? "Scheduling..." : `Visit ${smashData.pcp.name}`}
+              {isVisitLoading ? "Visiting..." : `Visit ${smashData.pcp.name}`}
             </Button>
 
             {/* Recommendations Card */}
@@ -293,20 +291,24 @@ export default function Dashboard() {
                     </p>
                     {improvementData.evidence_urls?.exercise && (
                       <div className="pl-4 mt-2">
-                        <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Evidence:
+                        </p>
                         <div className="space-y-1">
-                          {improvementData.evidence_urls.exercise.map((url, index) => (
-                            <a
-                              key={index}
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                              {url.replace(/https?:\/\//, '').split('/')[0]}
-                            </a>
-                          ))}
+                          {improvementData.evidence_urls.exercise.map(
+                            (url, index) => (
+                              <a
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                                {url.replace(/https?:\/\//, "").split("/")[0]}
+                              </a>
+                            )
+                          )}
                         </div>
                       </div>
                     )}
@@ -323,20 +325,24 @@ export default function Dashboard() {
                     </p>
                     {improvementData.evidence_urls?.sleep && (
                       <div className="pl-4 mt-2">
-                        <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Evidence:
+                        </p>
                         <div className="space-y-1">
-                          {improvementData.evidence_urls.sleep.map((url, index) => (
-                            <a
-                              key={index}
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                              {url.replace(/https?:\/\//, '').split('/')[0]}
-                            </a>
-                          ))}
+                          {improvementData.evidence_urls.sleep.map(
+                            (url, index) => (
+                              <a
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                                {url.replace(/https?:\/\//, "").split("/")[0]}
+                              </a>
+                            )
+                          )}
                         </div>
                       </div>
                     )}
@@ -353,20 +359,24 @@ export default function Dashboard() {
                     </p>
                     {improvementData.evidence_urls?.alcohol && (
                       <div className="pl-4 mt-2">
-                        <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Evidence:
+                        </p>
                         <div className="space-y-1">
-                          {improvementData.evidence_urls.alcohol.map((url, index) => (
-                            <a
-                              key={index}
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                              {url.replace(/https?:\/\//, '').split('/')[0]}
-                            </a>
-                          ))}
+                          {improvementData.evidence_urls.alcohol.map(
+                            (url, index) => (
+                              <a
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                                {url.replace(/https?:\/\//, "").split("/")[0]}
+                              </a>
+                            )
+                          )}
                         </div>
                       </div>
                     )}
@@ -396,20 +406,28 @@ export default function Dashboard() {
                         </div>
                         {improvementData.evidence_urls?.supplements && (
                           <div className="pl-4 mt-2">
-                            <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                            <p className="text-xs font-medium text-muted-foreground mb-1">
+                              Evidence:
+                            </p>
                             <div className="space-y-1">
-                              {improvementData.evidence_urls.supplements.map((url, index) => (
-                                <a
-                                  key={index}
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                                >
-                                  <ExternalLink className="h-3 w-3" />
-                                  {url.replace(/https?:\/\//, '').split('/')[0]}
-                                </a>
-                              ))}
+                              {improvementData.evidence_urls.supplements.map(
+                                (url, index) => (
+                                  <a
+                                    key={index}
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                                  >
+                                    <ExternalLink className="h-3 w-3" />
+                                    {
+                                      url
+                                        .replace(/https?:\/\//, "")
+                                        .split("/")[0]
+                                    }
+                                  </a>
+                                )
+                              )}
                             </div>
                           </div>
                         )}
