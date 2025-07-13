@@ -154,20 +154,15 @@ function BuildProcess({ onComplete }: { onComplete: () => void }) {
 
 export default function Home() {
   const [showBuildProcess, setShowBuildProcess] = useState(false);
-  const [buildComplete, setBuildComplete] = useState(false);
 
   const handleStartBuild = () => {
     setShowBuildProcess(true);
   };
 
-  const handleBuildComplete = () => {
-    setBuildComplete(true);
-  };
-
   if (showBuildProcess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted py-12 px-4">
-        <BuildProcess onComplete={handleBuildComplete} />
+        <BuildProcess onComplete={() => {}} />
       </div>
     );
   }
