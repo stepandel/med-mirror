@@ -751,7 +751,7 @@ export default function Dashboard() {
           <div className="space-y-4">
             <ImageUpload smashData={improvementData || smashData} />
 
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Primary Care Provider</CardTitle>
               </CardHeader>
@@ -770,9 +770,9 @@ export default function Dashboard() {
                   Last visit: {smashData.pcp.last_visit}
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Current Medications</CardTitle>
               </CardHeader>
@@ -786,9 +786,9 @@ export default function Dashboard() {
                   </div>
                 ))}
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Medical History</CardTitle>
               </CardHeader>
@@ -816,7 +816,7 @@ export default function Dashboard() {
                   </div>
                 )}
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </div>
