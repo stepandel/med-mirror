@@ -295,8 +295,8 @@ export default function ImageUpload({
           <div className="space-y-4">
             <div className="relative">
               <img
-                src={uploadedImage}
-                alt="Uploaded"
+                src={faceAgingResult || uploadedImage}
+                alt={faceAgingResult ? "Face aging prediction" : "Uploaded"}
                 className="w-full h-48 object-cover rounded-lg"
               />
               <Button
@@ -309,6 +309,15 @@ export default function ImageUpload({
               </Button>
             </div>
 
+            {faceAgingResult && (
+              <div className="text-center">
+                <h4 className="font-medium">You in 10 Years</h4>
+                <p className="text-xs text-muted-foreground">
+                  AI-generated prediction based on your health data
+                </p>
+              </div>
+            )}
+
             {/* Face Aging Button */}
             <Button
               onClick={handleFaceAging}
@@ -317,33 +326,18 @@ export default function ImageUpload({
               variant="secondary"
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              {isProcessingAging ? "Processing..." : "Show Me in 10 Years"}
+              {isProcessingAging
+                ? "Processing..."
+                : faceAgingResult
+                ? "Regenerate my image based on new data"
+                : "Show Me in 10 Years"}
             </Button>
 
-            <p className="text-xs text-muted-foreground text-center">
-              AI-generated prediction based on your health data
-            </p>
-
-            {/* Face Aging Result */}
-            {faceAgingResult && (
-              <div className="mt-4 space-y-3">
-                <h4 className="font-medium text-center">You in 10 Years:</h4>
-                <div className="relative">
-                  <img
-                    src={faceAgingResult}
-                    alt="Face aging prediction"
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground text-center">
-                  AI-generated prediction based on your health data
-                </p>
-              </div>
-            )}
-
-            {/* <p className="text-xs text-muted-foreground text-center">
-              Image cached locally
-            </p> */}
+            {/* {!faceAgingResult && (
+              <p className="text-xs text-muted-foreground text-center">
+                Image cached locally
+              </p>
+            )} */}
           </div>
         ) : (
           <div className="space-y-4">
