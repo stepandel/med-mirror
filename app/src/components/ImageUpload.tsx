@@ -33,8 +33,10 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
           setUploadedImage(imageUrl);
 
           // Cache the image in localStorage
-          localStorage.setItem("cachedImage", imageUrl);
-          localStorage.setItem("cachedImageTimestamp", Date.now().toString());
+          if (typeof window !== 'undefined') {
+            localStorage.setItem("cachedImage", imageUrl);
+            localStorage.setItem("cachedImageTimestamp", Date.now().toString());
+          }
 
           onImageUpload?.(imageUrl);
           setIsLoading(false);
@@ -56,21 +58,21 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
     try {
       setIsLoading(true);
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { 
+        video: {
           facingMode: "environment",
           width: { ideal: 1280 },
-          height: { ideal: 720 }
+          height: { ideal: 720 },
         },
         audio: false,
       });
 
       setStream(mediaStream);
       setShowCamera(true);
-      
+
       // Set up video stream and wait for it to be ready
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        
+
         // Wait for video to be ready
         await new Promise((resolve) => {
           if (videoRef.current) {
@@ -81,7 +83,7 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
           }
         });
       }
-      
+
       setIsLoading(false);
     } catch (error) {
       console.error("Error accessing camera:", error);
@@ -172,20 +174,23 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
 
   const handleRemoveImage = () => {
     setUploadedImage(null);
-    localStorage.removeItem("cachedImage");
-    localStorage.removeItem("cachedImageTimestamp");
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("cachedImage");
+      localStorage.removeItem("cachedImageTimestamp");
+    }
     onImageUpload?.("");
   };
 
   // Load cached image on component mount
-  useState(() => {
-    const cachedImage = localStorage.getItem("cachedImage");
-    const timestamp = localStorage.getItem("cachedImageTimestamp");
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const cachedImage = localStorage.getItem("cachedImage");
+      const timestamp = localStorage.getItem("cachedImageTimestamp");
 
-    // Check if cached image is less than 24 hours old
-    if (cachedImage && timestamp) {
-      const imageAge = Date.now() - parseInt(timestamp);
-      const twentyFourHours = 24 * 60 * 60 * 1000;
+      // Check if cached image is less than 24 hours old
+      if (cachedImage && timestamp) {
+        const imageAge = Date.now() - parseInt(timestamp);
+        const twentyFourHours = 24 * 60 * 60 * 1000;
 
       if (imageAge < twentyFourHours) {
         setUploadedImage(cachedImage);
@@ -196,7 +201,8 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
         localStorage.removeItem("cachedImageTimestamp");
       }
     }
-  });
+    }
+  }, []);
 
   return (
     <Card>
@@ -224,7 +230,7 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
               />
               <canvas ref={canvasRef} className="hidden" />
               {/* Debug info */}
-              {process.env.NODE_ENV === 'development' && (
+              {process.env.NODE_ENV === "development" && (
                 <div className="absolute top-2 left-2 text-xs text-white bg-black bg-opacity-50 p-1 rounded">
                   {videoRef.current?.videoWidth}x{videoRef.current?.videoHeight}
                 </div>
