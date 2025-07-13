@@ -11,13 +11,34 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import ImageUpload from "@/components/ImageUpload";
+import { useVisitAPI } from "@/hooks/useVisitAPI";
 import smashData from "./smash.json";
 
 export default function Dashboard() {
+  const {
+    isLoading: isVisitLoading,
+    improvementData,
+    scheduleVisit,
+  } = useVisitAPI();
+
   // Calculate health metrics from smash.json data
-  const exerciseRating = smashData.social_history.exercise.rating; // Estimated hours per week
-  const sleepRating = smashData.social_history.sleep.rating; // Servings per day
-  const alcoholIntake = smashData.social_history.alcohol.rating; // Drinks per week
+  const exerciseRating = smashData.social_history.exercise.rating;
+  const sleepRating = smashData.social_history.sleep.rating;
+  const alcoholIntake = smashData.social_history.alcohol.rating;
+
+  const handleVisitDoctor = async () => {
+    try {
+      await scheduleVisit(smashData);
+      alert(
+        "Visit scheduled successfully! Your improvement plan is now showing."
+      );
+    } catch (error) {
+      console.error("Error calling visit API:", error);
+      alert("Failed to schedule visit. Please try again.");
+    }
+  };
+
+  console.log(improvementData);
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -41,31 +62,117 @@ export default function Dashboard() {
                     <label className="block text-sm font-medium">
                       Exercise Level
                     </label>
+                    {improvementData &&
+                      improvementData.social_history.exercise.rating !==
+                        exerciseRating && (
+                        <span className="text-xs text-green-600 font-medium">
+                          +
+                          {improvementData.social_history.exercise.rating -
+                            exerciseRating}{" "}
+                        </span>
+                      )}
                   </div>
-                  <Progress value={exerciseRating * 10} className="w-full" />
+                  <div className="relative">
+                    {improvementData ? (
+                      <>
+                        {/* Improvement bar (black) */}
+                        <Progress
+                          value={
+                            improvementData.social_history.exercise.rating * 10
+                          }
+                          className="w-full"
+                        />
+                        {/* Difference overlay (green) */}
+                        {improvementData.social_history.exercise.rating >
+                          exerciseRating && (
+                          <div
+                            className="absolute transition-all duration-700 ease-out bg-green-500"
+                            style={{
+                              left: `${exerciseRating * 10}%`,
+                              width: `${
+                                (improvementData.social_history.exercise
+                                  .rating -
+                                  exerciseRating) *
+                                10
+                              }%`,
+                              height: "100%",
+                              top: 0,
+                            }}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <Progress
+                        value={exerciseRating * 10}
+                        className="w-full"
+                      />
+                    )}
+                  </div>
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0 hrs</span>
                     <span>≥20 hrs</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {smashData.social_history.exercise.description}
+                    {improvementData?.social_history.exercise.description ||
+                      smashData.social_history.exercise.description}
                   </p>
                 </div>
 
-                {/* Caffeine Intake */}
+                {/* Sleep Hours */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-sm font-medium">
                       Sleep Hours
                     </label>
+                    {improvementData &&
+                      improvementData.social_history.sleep.rating !==
+                        sleepRating && (
+                        <span className="text-xs text-green-600 font-medium">
+                          +
+                          {improvementData.social_history.sleep.rating -
+                            sleepRating}{" "}
+                        </span>
+                      )}
                   </div>
-                  <Progress value={sleepRating * 10} className="w-full" />
+                  <div className="relative">
+                    {improvementData ? (
+                      <>
+                        {/* Improvement bar (black) */}
+                        <Progress
+                          value={
+                            improvementData.social_history.sleep.rating * 10
+                          }
+                          className="w-full"
+                        />
+                        {/* Difference overlay (green) */}
+                        {improvementData.social_history.sleep.rating >
+                          sleepRating && (
+                          <div
+                            className="absolute transition-all duration-700 ease-out bg-green-500"
+                            style={{
+                              left: `${sleepRating * 10}%`,
+                              width: `${
+                                (improvementData.social_history.sleep.rating -
+                                  sleepRating) *
+                                10
+                              }%`,
+                              height: "100%",
+                              top: 0,
+                            }}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <Progress value={sleepRating * 10} className="w-full" />
+                    )}
+                  </div>
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0 hrs</span>
                     <span>8+ hrs</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {smashData.social_history.sleep.description}
+                    {improvementData?.social_history.sleep.description ||
+                      smashData.social_history.sleep.description}
                   </p>
                 </div>
 
@@ -75,22 +182,93 @@ export default function Dashboard() {
                     <label className="block text-sm font-medium">
                       Alcohol Consumption
                     </label>
+                    {improvementData &&
+                      improvementData.social_history.alcohol.rating !==
+                        alcoholIntake && (
+                        <span
+                          className={`text-xs font-medium ${
+                            improvementData.social_history.alcohol.rating <
+                            alcoholIntake
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {improvementData.social_history.alcohol.rating <
+                          alcoholIntake
+                            ? "-"
+                            : "+"}
+                          {Math.abs(
+                            improvementData.social_history.alcohol.rating -
+                              alcoholIntake
+                          )}
+                        </span>
+                      )}
                   </div>
-                  <Progress value={alcoholIntake * 10} className="w-full" />
+                  <div className="relative">
+                    {improvementData ? (
+                      <>
+                        {/* Improvement bar (black) */}
+                        <Progress
+                          value={
+                            improvementData.social_history.alcohol.rating * 10
+                          }
+                          className="w-full"
+                        />
+                        {/* Difference overlay (green for reduction, red for increase) */}
+                        {improvementData.social_history.alcohol.rating !==
+                          alcoholIntake && (
+                          <div
+                            className={`absolute transition-all duration-700 ease-out ${
+                              improvementData.social_history.alcohol.rating <
+                              alcoholIntake
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            }`}
+                            style={{
+                              left:
+                                improvementData.social_history.alcohol.rating <
+                                alcoholIntake
+                                  ? `${
+                                      improvementData.social_history.alcohol
+                                        .rating * 10
+                                    }%`
+                                  : `${alcoholIntake * 10}%`,
+                              width: `${
+                                Math.abs(
+                                  improvementData.social_history.alcohol
+                                    .rating - alcoholIntake
+                                ) * 10
+                              }%`,
+                              height: "100%",
+                              top: 0,
+                            }}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <Progress value={alcoholIntake * 10} className="w-full" />
+                    )}
+                  </div>
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0</span>
                     <span>14+ drinks</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {smashData.social_history.alcohol.description}
+                    {improvementData?.social_history.alcohol.description ||
+                      smashData.social_history.alcohol.description}
                   </p>
                 </div>
               </CardContent>
             </Card>
 
             {/* CTA Button */}
-            <Button className="w-full" size="lg">
-              Visit {smashData.pcp.name}
+            <Button
+              className="w-full"
+              size="lg"
+              onClick={handleVisitDoctor}
+              disabled={isVisitLoading}
+            >
+              {isVisitLoading ? "Scheduling..." : `Visit ${smashData.pcp.name}`}
             </Button>
           </div>
 
@@ -102,8 +280,28 @@ export default function Dashboard() {
                 <CardTitle className="text-lg">Life Expectancy</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {smashData.forecast.life_expectancy_years} years
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl font-bold text-primary mb-1">
+                    {smashData.forecast.life_expectancy_years} years
+                  </div>
+                  {improvementData &&
+                    improvementData.forecast.life_expectancy_years !==
+                      smashData.forecast.life_expectancy_years && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">→</span>
+                        <div className="text-2xl font-bold text-green-600">
+                          {improvementData.forecast.life_expectancy_years} years
+                        </div>
+                        <span className="text-xs text-green-600 font-medium">
+                          +
+                          {(
+                            improvementData.forecast.life_expectancy_years -
+                            smashData.forecast.life_expectancy_years
+                          ).toFixed(1)}{" "}
+                          years
+                        </span>
+                      </div>
+                    )}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   CI: 78-87 years
@@ -144,6 +342,56 @@ export default function Dashboard() {
                     )}
                     %
                   </div>
+                  {improvementData &&
+                    improvementData.forecast
+                      .cardiovascular_event_10yr_probability !==
+                      smashData.forecast
+                        .cardiovascular_event_10yr_probability && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">→</span>
+                        <div
+                          className={`text-2xl font-bold ${
+                            Math.round(
+                              improvementData.forecast
+                                .cardiovascular_event_10yr_probability * 100
+                            ) < 5
+                              ? "text-green-600"
+                              : Math.round(
+                                  improvementData.forecast
+                                    .cardiovascular_event_10yr_probability * 100
+                                ) <= 10
+                              ? "text-yellow-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {Math.round(
+                            improvementData.forecast
+                              .cardiovascular_event_10yr_probability * 100
+                          )}
+                          %
+                        </div>
+                        <span className="text-xs text-green-600 font-medium">
+                          {improvementData.forecast
+                            .cardiovascular_event_10yr_probability <
+                          smashData.forecast
+                            .cardiovascular_event_10yr_probability
+                            ? `-${Math.round(
+                                (smashData.forecast
+                                  .cardiovascular_event_10yr_probability -
+                                  improvementData.forecast
+                                    .cardiovascular_event_10yr_probability) *
+                                  100
+                              )}% improvement`
+                            : `+${Math.round(
+                                (improvementData.forecast
+                                  .cardiovascular_event_10yr_probability -
+                                  smashData.forecast
+                                    .cardiovascular_event_10yr_probability) *
+                                  100
+                              )}% increase`}
+                        </span>
+                      </div>
+                    )}
                 </div>
               </CardContent>
             </Card>
@@ -154,7 +402,7 @@ export default function Dashboard() {
                 <CardTitle className="text-lg">Energy Levels</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {smashData.forecast.energy_level === "Low" && (
                     <Badge
                       variant="default"
@@ -179,6 +427,30 @@ export default function Dashboard() {
                       High
                     </Badge>
                   )}
+
+                  {improvementData &&
+                    improvementData.forecast.energy_level !==
+                      smashData.forecast.energy_level && (
+                      <>
+                        <span className="text-sm text-muted-foreground">→</span>
+                        <Badge
+                          variant="default"
+                          className={`text-lg px-4 py-2 ${
+                            improvementData.forecast.energy_level === "High"
+                              ? "bg-green-100 text-green-800 hover:bg-green-100"
+                              : improvementData.forecast.energy_level ===
+                                "Medium"
+                              ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
+                              : "bg-red-100 text-red-800 hover:bg-red-100"
+                          }`}
+                        >
+                          {improvementData.forecast.energy_level}
+                        </Badge>
+                        <span className="text-xs text-green-600 font-medium">
+                          Improved!
+                        </span>
+                      </>
+                    )}
                 </div>
               </CardContent>
             </Card>
@@ -191,7 +463,7 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {smashData.forecast.metabolic_disease_risk === "Low" && (
                     <Badge
                       variant="default"
@@ -216,6 +488,31 @@ export default function Dashboard() {
                       High
                     </Badge>
                   )}
+
+                  {improvementData &&
+                    improvementData.forecast.metabolic_disease_risk !==
+                      smashData.forecast.metabolic_disease_risk && (
+                      <>
+                        <span className="text-sm text-muted-foreground">→</span>
+                        <Badge
+                          variant="default"
+                          className={`text-lg px-4 py-2 ${
+                            improvementData.forecast.metabolic_disease_risk ===
+                            "Low"
+                              ? "bg-green-100 text-green-800 hover:bg-green-100"
+                              : improvementData.forecast
+                                  .metabolic_disease_risk === "Medium"
+                              ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
+                              : "bg-red-100 text-red-800 hover:bg-red-100"
+                          }`}
+                        >
+                          {improvementData.forecast.metabolic_disease_risk}
+                        </Badge>
+                        <span className="text-xs text-green-600 font-medium">
+                          Improved!
+                        </span>
+                      </>
+                    )}
                 </div>
               </CardContent>
             </Card>
@@ -228,7 +525,7 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {smashData.forecast.dementia_risk === "Low" && (
                     <Badge
                       variant="default"
@@ -253,6 +550,32 @@ export default function Dashboard() {
                       High
                     </Badge>
                   )}
+
+                  {improvementData &&
+                    improvementData.forecast.dementia_risk !==
+                      smashData.forecast.dementia_risk && (
+                      <>
+                        <span className="text-sm text-muted-foreground">→</span>
+                        <Badge
+                          variant="default"
+                          className={`text-lg px-4 py-2 ${
+                            improvementData.forecast.dementia_risk === "Low"
+                              ? "bg-green-100 text-green-800 hover:bg-green-100"
+                              : improvementData.forecast.dementia_risk ===
+                                "Moderate"
+                              ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
+                              : "bg-red-100 text-red-800 hover:bg-red-100"
+                          }`}
+                        >
+                          {improvementData.forecast.dementia_risk === "Moderate"
+                            ? "Medium"
+                            : improvementData.forecast.dementia_risk}
+                        </Badge>
+                        <span className="text-xs text-green-600 font-medium">
+                          Improved!
+                        </span>
+                      </>
+                    )}
                 </div>
               </CardContent>
             </Card>
