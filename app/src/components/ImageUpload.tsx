@@ -3,17 +3,25 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Upload, X } from "lucide-react";
+import { Camera, Upload, X, Sparkles } from "lucide-react";
+import { VisitData } from "@/hooks/useVisitAPI";
 
 interface ImageUploadProps {
   onImageUpload?: (imageUrl: string) => void;
+  smashData: Omit<VisitData, "recommendations">;
 }
 
-export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
+export default function ImageUpload({
+  onImageUpload,
+  smashData,
+}: ImageUploadProps) {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [faceAgingResult, setFaceAgingResult] = useState<string | null>(null);
+  const [isProcessingAging, setIsProcessingAging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,9 +39,10 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
         reader.onload = (e) => {
           const imageUrl = e.target?.result as string;
           setUploadedImage(imageUrl);
+          setUploadedFile(file);
 
           // Cache the image in localStorage
-          if (typeof window !== 'undefined') {
+          if (typeof window !== "undefined") {
             localStorage.setItem("cachedImage", imageUrl);
             localStorage.setItem("cachedImageTimestamp", Date.now().toString());
           }
@@ -174,16 +183,51 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
 
   const handleRemoveImage = () => {
     setUploadedImage(null);
-    if (typeof window !== 'undefined') {
+    setUploadedFile(null);
+    setFaceAgingResult(null);
+    if (typeof window !== "undefined") {
       localStorage.removeItem("cachedImage");
       localStorage.removeItem("cachedImageTimestamp");
     }
     onImageUpload?.("");
   };
 
+  const handleFaceAging = async () => {
+    if (!uploadedFile) {
+      alert("Please upload an image first");
+      return;
+    }
+
+    setIsProcessingAging(true);
+    try {
+      // Prepare form data
+      const formData = new FormData();
+      formData.append("image", uploadedFile);
+      formData.append("smash", JSON.stringify(smashData));
+
+      // Call face aging API
+      const response = await fetch("/api/face-aging", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      setFaceAgingResult(result.prediction);
+    } catch (error) {
+      console.error("Face aging error:", error);
+      alert("Failed to process face aging. Please try again.");
+    } finally {
+      setIsProcessingAging(false);
+    }
+  };
+
   // Load cached image on component mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const cachedImage = localStorage.getItem("cachedImage");
       const timestamp = localStorage.getItem("cachedImageTimestamp");
 
@@ -192,15 +236,15 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
         const imageAge = Date.now() - parseInt(timestamp);
         const twentyFourHours = 24 * 60 * 60 * 1000;
 
-      if (imageAge < twentyFourHours) {
-        setUploadedImage(cachedImage);
-        onImageUpload?.(cachedImage);
-      } else {
-        // Remove expired cached image
-        localStorage.removeItem("cachedImage");
-        localStorage.removeItem("cachedImageTimestamp");
+        if (imageAge < twentyFourHours) {
+          setUploadedImage(cachedImage);
+          onImageUpload?.(cachedImage);
+        } else {
+          // Remove expired cached image
+          localStorage.removeItem("cachedImage");
+          localStorage.removeItem("cachedImageTimestamp");
+        }
       }
-    }
     }
   }, []);
 
@@ -264,6 +308,35 @@ export default function ImageUpload({ onImageUpload }: ImageUploadProps) {
                 <X className="h-4 w-4" />
               </Button>
             </div>
+
+            {/* Face Aging Button */}
+            <Button
+              onClick={handleFaceAging}
+              disabled={isProcessingAging || !uploadedFile}
+              className="w-full"
+              variant="secondary"
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              {isProcessingAging ? "Processing..." : "Show Me in 10 Years"}
+            </Button>
+
+            {/* Face Aging Result */}
+            {faceAgingResult && (
+              <div className="mt-4 space-y-3">
+                <h4 className="font-medium text-center">You in 10 Years:</h4>
+                <div className="relative">
+                  <img
+                    src={faceAgingResult}
+                    alt="Face aging prediction"
+                    className="w-full h-48 object-cover rounded-lg"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  AI-generated prediction based on your health data
+                </p>
+              </div>
+            )}
+
             <p className="text-xs text-muted-foreground text-center">
               Image cached locally
             </p>
