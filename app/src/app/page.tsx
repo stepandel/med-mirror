@@ -16,8 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Loader2 } from "lucide-react";
 
 const steps = [
-  "Pulling your medical records",
-  "Loading your health data",
+  "Querrying MCP servers for your hospital records",
+  "Pulling your health data from your devices",
   "Analyzing the health data",
   "Generating SMASH FM model",
   "Building your med mirror",
