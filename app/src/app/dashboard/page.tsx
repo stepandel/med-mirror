@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import ImageUpload from "@/components/ImageUpload";
 import { useVisitAPI } from "@/hooks/useVisitAPI";
+import { ExternalLink } from "lucide-react";
 import smashData from "./smash.json";
 
 export default function Dashboard() {
@@ -290,6 +291,25 @@ export default function Dashboard() {
                     <p className="text-sm text-muted-foreground pl-4">
                       {improvementData.recommendations.exercise.description}
                     </p>
+                    {improvementData.evidence_urls?.exercise && (
+                      <div className="pl-4 mt-2">
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                        <div className="space-y-1">
+                          {improvementData.evidence_urls.exercise.map((url, index) => (
+                            <a
+                              key={index}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              {url.replace(/https?:\/\//, '').split('/')[0]}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Sleep Recommendation */}
@@ -301,6 +321,25 @@ export default function Dashboard() {
                     <p className="text-sm text-muted-foreground pl-4">
                       {improvementData.recommendations.sleep.description}
                     </p>
+                    {improvementData.evidence_urls?.sleep && (
+                      <div className="pl-4 mt-2">
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                        <div className="space-y-1">
+                          {improvementData.evidence_urls.sleep.map((url, index) => (
+                            <a
+                              key={index}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              {url.replace(/https?:\/\//, '').split('/')[0]}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Alcohol Recommendation */}
@@ -312,25 +351,70 @@ export default function Dashboard() {
                     <p className="text-sm text-muted-foreground pl-4">
                       {improvementData.recommendations.alcohol.description}
                     </p>
+                    {improvementData.evidence_urls?.alcohol && (
+                      <div className="pl-4 mt-2">
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                        <div className="space-y-1">
+                          {improvementData.evidence_urls.alcohol.map((url, index) => (
+                            <a
+                              key={index}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              {url.replace(/https?:\/\//, '').split('/')[0]}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Supplements Recommendations */}
-                  {improvementData.recommendations.supplements && 
-                   improvementData.recommendations.supplements.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="font-medium text-sm">Supplements</span>
+                  {improvementData.recommendations.supplements &&
+                    improvementData.recommendations.supplements.length > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="font-medium text-sm">
+                            Supplements
+                          </span>
+                        </div>
+                        <div className="pl-4 space-y-2">
+                          {improvementData.recommendations.supplements.map(
+                            (supplement, index) => (
+                              <p
+                                key={index}
+                                className="text-sm text-muted-foreground"
+                              >
+                                {supplement.description}
+                              </p>
+                            )
+                          )}
+                        </div>
+                        {improvementData.evidence_urls?.supplements && (
+                          <div className="pl-4 mt-2">
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Evidence:</p>
+                            <div className="space-y-1">
+                              {improvementData.evidence_urls.supplements.map((url, index) => (
+                                <a
+                                  key={index}
+                                  href={url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                                >
+                                  <ExternalLink className="h-3 w-3" />
+                                  {url.replace(/https?:\/\//, '').split('/')[0]}
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="pl-4 space-y-2">
-                        {improvementData.recommendations.supplements.map((supplement, index) => (
-                          <p key={index} className="text-sm text-muted-foreground">
-                            {supplement.description}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                    )}
                 </CardContent>
               </Card>
             )}
@@ -647,7 +731,7 @@ export default function Dashboard() {
 
           {/* Right Column - Patient Info & Image Upload */}
           <div className="space-y-4">
-            <ImageUpload />
+            <ImageUpload smashData={improvementData || smashData} />
 
             <Card>
               <CardHeader>
