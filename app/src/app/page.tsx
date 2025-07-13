@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -168,20 +169,37 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold mb-8">Med Mirror</h1>
-        <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Visualize your health journey with personalized insights and
-          predictions
-        </p>
-        <Button
-          onClick={handleStartBuild}
-          size="lg"
-          className="text-xl py-6 px-8"
-        >
-          Build your med mirror
-        </Button>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col items-center text-center space-y-8">
+          <h1 className="text-6xl font-bold">Med Mirror</h1>
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto">
+            Visualize your health journey with personalized insights and
+            predictions
+          </p>
+          {/* Top - Image */}
+          <div className="w-full max-w-xl mb-8">
+            <Image
+              src="/images/home.png"
+              alt="Med Mirror Preview"
+              width={300}
+              height={200}
+              className="w-full h-auto rounded-lg"
+              priority
+            />
+          </div>
+
+          {/* Bottom - Text content */}
+          <div className="space-y-8 max-w-4xl">
+            <Button
+              onClick={handleStartBuild}
+              size="lg"
+              className="text-xl py-6 px-8"
+            >
+              Build your med mirror
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
