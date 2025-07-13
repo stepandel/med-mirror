@@ -15,10 +15,10 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Loader2 } from "lucide-react";
 
 const steps = [
-  "Pull your medical records",
-  "Load your health data",
-  "Analyze the health data",
-  "Generate SMASH FM model",
+  "Pulling your medical records",
+  "Loading your health data",
+  "Analyzing the health data",
+  "Generating SMASH FM model",
   "Building your med mirror",
   "Building digital twin for your primary physitian (Dr Samantha Blake, MD)",
 ];
