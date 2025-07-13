@@ -133,8 +133,8 @@ function BuildProcess({ onComplete }: { onComplete: () => void }) {
                     🎉 Your Med Mirror is Ready!
                   </CardTitle>
                   <CardDescription className="text-green-700">
-                    We've successfully analyzed your health data and built your
-                    personalized medical mirror.
+                    We&apos;ve successfully analyzed your health data and built
+                    your personalized medical mirror.
                   </CardDescription>
                 </CardHeader>
               </Card>
