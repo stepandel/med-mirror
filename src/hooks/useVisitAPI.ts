@@ -112,14 +112,17 @@ export const useVisitAPI = (): UseVisitAPIReturn => {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch("https://mirror-med-api.fly.dev/visit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        "https://mirror-med-api.fly.dev/visit-crew",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -128,25 +131,7 @@ export const useVisitAPI = (): UseVisitAPIReturn => {
       const result = await response.json();
       console.log("Visit API response:", result);
 
-      // Store the improvement data
-      setImprovementData({
-        ...result,
-        social_history: {
-          ...result.social_history,
-          exercise: {
-            ...result.social_history.exercise,
-            rating: result.social_history.exercise.rating + 2,
-          },
-          sleep: {
-            ...result.social_history.sleep,
-            rating: result.social_history.sleep.rating + 2,
-          },
-          alcohol: {
-            ...result.social_history.alcohol,
-            rating: result.social_history.alcohol.rating - 2,
-          },
-        },
-      });
+      setImprovementData(result);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Unknown error occurred";
