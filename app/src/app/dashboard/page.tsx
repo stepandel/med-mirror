@@ -63,11 +63,11 @@ export default function Dashboard() {
                       Exercise Level
                     </label>
                     {improvementData &&
-                      improvementData.social_history.exercise.rating !==
+                      improvementData.recommendations.exercise.rating !==
                         exerciseRating && (
                         <span className="text-xs text-green-600 font-medium">
                           +
-                          {improvementData.social_history.exercise.rating -
+                          {improvementData.recommendations.exercise.rating -
                             exerciseRating}{" "}
                         </span>
                       )}
@@ -78,19 +78,19 @@ export default function Dashboard() {
                         {/* Improvement bar (black) */}
                         <Progress
                           value={
-                            improvementData.social_history.exercise.rating * 10
+                            improvementData.recommendations.exercise.rating * 10
                           }
                           className="w-full"
                         />
                         {/* Difference overlay (green) */}
-                        {improvementData.social_history.exercise.rating >
+                        {improvementData.recommendations.exercise.rating >
                           exerciseRating && (
                           <div
                             className="absolute transition-all duration-700 ease-out bg-green-500"
                             style={{
                               left: `${exerciseRating * 10}%`,
                               width: `${
-                                (improvementData.social_history.exercise
+                                (improvementData.recommendations.exercise
                                   .rating -
                                   exerciseRating) *
                                 10
@@ -113,7 +113,7 @@ export default function Dashboard() {
                     <span>≥20 hrs</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {improvementData?.social_history.exercise.description ||
+                    {improvementData?.recommendations.exercise.description ||
                       smashData.social_history.exercise.description}
                   </p>
                 </div>
@@ -125,11 +125,11 @@ export default function Dashboard() {
                       Sleep Hours
                     </label>
                     {improvementData &&
-                      improvementData.social_history.sleep.rating !==
+                      improvementData.recommendations.sleep.rating !==
                         sleepRating && (
                         <span className="text-xs text-green-600 font-medium">
                           +
-                          {improvementData.social_history.sleep.rating -
+                          {improvementData.recommendations.sleep.rating -
                             sleepRating}{" "}
                         </span>
                       )}
@@ -140,19 +140,19 @@ export default function Dashboard() {
                         {/* Improvement bar (black) */}
                         <Progress
                           value={
-                            improvementData.social_history.sleep.rating * 10
+                            improvementData.recommendations.sleep.rating * 10
                           }
                           className="w-full"
                         />
                         {/* Difference overlay (green) */}
-                        {improvementData.social_history.sleep.rating >
+                        {improvementData.recommendations.sleep.rating >
                           sleepRating && (
                           <div
                             className="absolute transition-all duration-700 ease-out bg-green-500"
                             style={{
                               left: `${sleepRating * 10}%`,
                               width: `${
-                                (improvementData.social_history.sleep.rating -
+                                (improvementData.recommendations.sleep.rating -
                                   sleepRating) *
                                 10
                               }%`,
@@ -171,7 +171,7 @@ export default function Dashboard() {
                     <span>8+ hrs</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {improvementData?.social_history.sleep.description ||
+                    {improvementData?.recommendations.sleep.description ||
                       smashData.social_history.sleep.description}
                   </p>
                 </div>
@@ -183,22 +183,22 @@ export default function Dashboard() {
                       Alcohol Consumption
                     </label>
                     {improvementData &&
-                      improvementData.social_history.alcohol.rating !==
+                      improvementData.recommendations.alcohol.rating !==
                         alcoholIntake && (
                         <span
                           className={`text-xs font-medium ${
-                            improvementData.social_history.alcohol.rating <
+                            improvementData.recommendations.alcohol.rating <
                             alcoholIntake
                               ? "text-green-600"
                               : "text-red-600"
                           }`}
                         >
-                          {improvementData.social_history.alcohol.rating <
+                          {improvementData.recommendations.alcohol.rating <
                           alcoholIntake
                             ? "-"
                             : "+"}
                           {Math.abs(
-                            improvementData.social_history.alcohol.rating -
+                            improvementData.recommendations.alcohol.rating -
                               alcoholIntake
                           )}
                         </span>
@@ -210,32 +210,32 @@ export default function Dashboard() {
                         {/* Improvement bar (black) */}
                         <Progress
                           value={
-                            improvementData.social_history.alcohol.rating * 10
+                            improvementData.recommendations.alcohol.rating * 10
                           }
                           className="w-full"
                         />
                         {/* Difference overlay (green for reduction, red for increase) */}
-                        {improvementData.social_history.alcohol.rating !==
+                        {improvementData.recommendations.alcohol.rating !==
                           alcoholIntake && (
                           <div
                             className={`absolute transition-all duration-700 ease-out ${
-                              improvementData.social_history.alcohol.rating <
+                              improvementData.recommendations.alcohol.rating <
                               alcoholIntake
                                 ? "bg-green-500"
                                 : "bg-red-500"
                             }`}
                             style={{
                               left:
-                                improvementData.social_history.alcohol.rating <
+                                improvementData.recommendations.alcohol.rating <
                                 alcoholIntake
                                   ? `${
-                                      improvementData.social_history.alcohol
+                                      improvementData.recommendations.alcohol
                                         .rating * 10
                                     }%`
                                   : `${alcoholIntake * 10}%`,
                               width: `${
                                 Math.abs(
-                                  improvementData.social_history.alcohol
+                                  improvementData.recommendations.alcohol
                                     .rating - alcoholIntake
                                 ) * 10
                               }%`,
@@ -254,7 +254,7 @@ export default function Dashboard() {
                     <span>14+ drinks</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {improvementData?.social_history.alcohol.description ||
+                    {improvementData?.recommendations.alcohol.description ||
                       smashData.social_history.alcohol.description}
                   </p>
                 </div>
@@ -270,6 +270,70 @@ export default function Dashboard() {
             >
               {isVisitLoading ? "Scheduling..." : `Visit ${smashData.pcp.name}`}
             </Button>
+
+            {/* Recommendations Card */}
+            {improvementData && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Your Personalized Recommendations</CardTitle>
+                  <CardDescription>
+                    Based on your visit with {smashData.pcp.name}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Exercise Recommendation */}
+                  <div className="border-b pb-3 last:border-b-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="font-medium text-sm">Exercise</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground pl-4">
+                      {improvementData.recommendations.exercise.description}
+                    </p>
+                  </div>
+
+                  {/* Sleep Recommendation */}
+                  <div className="border-b pb-3 last:border-b-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span className="font-medium text-sm">Sleep</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground pl-4">
+                      {improvementData.recommendations.sleep.description}
+                    </p>
+                  </div>
+
+                  {/* Alcohol Recommendation */}
+                  <div className="border-b pb-3 last:border-b-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                      <span className="font-medium text-sm">Alcohol</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground pl-4">
+                      {improvementData.recommendations.alcohol.description}
+                    </p>
+                  </div>
+
+                  {/* Supplements Recommendations */}
+                  {improvementData.recommendations.supplements && 
+                   improvementData.recommendations.supplements.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="font-medium text-sm">Supplements</span>
+                      </div>
+                      <div className="pl-4 space-y-2">
+                        {improvementData.recommendations.supplements.map((supplement, index) => (
+                          <p key={index} className="text-sm text-muted-foreground">
+                            {supplement.description}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Middle Column - Health Cards */}

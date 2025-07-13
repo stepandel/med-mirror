@@ -87,6 +87,10 @@ interface VisitData {
       description: string;
       rating: number;
     };
+    supplements: Array<{
+      description: string;
+      rating: number;
+    }>;
   };
 }
 
@@ -112,17 +116,14 @@ export const useVisitAPI = (): UseVisitAPIReturn => {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch(
-        "https://mirror-med-api.fly.dev/visit-crew",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch("https://mirror-med-api.fly.dev/visit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify(data),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
