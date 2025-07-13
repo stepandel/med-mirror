@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import ImageUpload from "@/components/ImageUpload";
 import smashData from "./smash.json";
 
 export default function Dashboard() {
@@ -21,7 +22,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-8">Health Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-8">Med Mirror</h1>
 
         <div className="grid grid-cols-3 gap-8">
           {/* Left Column - Health Metrics Bars */}
@@ -44,7 +45,7 @@ export default function Dashboard() {
                   <Progress value={exerciseRating * 10} className="w-full" />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0 hrs</span>
-                    <span>20 hrs</span>
+                    <span>≥20 hrs</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {smashData.social_history.exercise.description}
@@ -257,8 +258,10 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Right Column - Patient Info */}
+          {/* Right Column - Patient Info & Image Upload */}
           <div className="space-y-4">
+            <ImageUpload />
+
             <Card>
               <CardHeader>
                 <CardTitle>Primary Care Provider</CardTitle>
