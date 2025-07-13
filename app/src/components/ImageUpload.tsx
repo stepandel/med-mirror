@@ -251,7 +251,7 @@ export default function ImageUpload({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Photo Upload</CardTitle>
+        <CardTitle>Your Digital Twin</CardTitle>
       </CardHeader>
       <CardContent>
         {showCamera ? (
@@ -320,6 +320,10 @@ export default function ImageUpload({
               {isProcessingAging ? "Processing..." : "Show Me in 10 Years"}
             </Button>
 
+            <p className="text-xs text-muted-foreground text-center">
+              AI-generated prediction based on your health data
+            </p>
+
             {/* Face Aging Result */}
             {faceAgingResult && (
               <div className="mt-4 space-y-3">
@@ -337,9 +341,9 @@ export default function ImageUpload({
               </div>
             )}
 
-            <p className="text-xs text-muted-foreground text-center">
+            {/* <p className="text-xs text-muted-foreground text-center">
               Image cached locally
-            </p>
+            </p> */}
           </div>
         ) : (
           <div className="space-y-4">
