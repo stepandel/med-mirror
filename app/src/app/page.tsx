@@ -19,8 +19,8 @@ const steps = [
   "Load your health data",
   "Analyze the health data",
   "Generate SMASH FM model",
-  "Build med mirror",
-  "Identify primary physician",
+  "Building your med mirror",
+  "Building digital twin for your primary physitian (Dr Samantha Blake, MD)",
 ];
 
 function BuildProcess({ onComplete }: { onComplete: () => void }) {
